@@ -4,8 +4,10 @@ const app = express();
 const bodyParser = require('body-parser')
 const db = require('../db')
 const movieRouter = require('../db/routes/movie-router')
+require('dotenv').config()
 // import firebase from 'firebase'
-const port = 5000;
+const port = process.env.PORT;
+console.log(port)
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())

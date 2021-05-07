@@ -4,21 +4,8 @@ const firebase = require('firebase')
 Device = async (req, res) => {
 
 
-    connect()
 
-    var db = firebase.firestore()
-    let devId = "ekNhZncrnK"
-    var docRef = db.collection("devices").doc(devId)
-    var eventList = []
-    docRef.get().then((doc) => {
-        let data = doc.data()
-        data.lastEvent.timeLocal = toDate(data.lastEvent.timeLocal)  
-        data.lastEvent.timeSync = toDate(data.lastEvent.timeSync) 
-data.Id = devId
-        console.log(data)      
-
-
-        const movie = new Movie(data)
+        const movie = new Movie({mongoAtlas:1})
         movie.save()
             .then(() => {
                 console.log("successfully written")
@@ -29,9 +16,7 @@ data.Id = devId
             })
 
 
-    }).catch((error) => {
-        console.log("Error getting document:", error);
-    })
+    
 
 
     //    return res.json({ success: true })
