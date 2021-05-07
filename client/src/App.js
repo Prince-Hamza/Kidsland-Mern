@@ -11,7 +11,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">React Express Starter</h1>
         </header>
-        <Customers />
+        {/* <Customers /> */}
       </div>
     );
   }
