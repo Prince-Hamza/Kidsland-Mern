@@ -3,9 +3,14 @@ const Schema = mongoose.Schema
 
 const Movie = new Schema(
       {
-        mongoAtlas: { type: Number, required: true },
+        amount: { type: Number, required: false },
+        timeLocal: { type: String, required: false },
+        timeSync: { type: String, required: false },
+        Device:{ type: String, required: false },
+        type:{ type: String, required: false },
+        
     },
     { timestamps: true },
 )
 
-module.exports = mongoose.model('devices', Movie)
+module.exports = mongoose.model('events', Movie)

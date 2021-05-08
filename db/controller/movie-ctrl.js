@@ -1,19 +1,42 @@
 const Movie = require('../models/movie-model')
+const Devicez = require('../models/Devices')
+
 const firebase = require('firebase')
 
 Device = async (req, res) => {
 
 
+    connect()
 
-        const movie = new Movie({mongoAtlas:1})
-        movie.save()
+
+    let devId = req.url.split('/')[2]
+    var db = firebase.firestore()
+    var docRef = db.collection("devices").doc(devId).collection('events')
+    var eventList = []
+
+    docRef.get().then((doc) => {
+
+        doc.forEach((ev)=>{
+            let data = ev.data()
+            data.Device = devId
+            eventList.push(data)
+        })
+           
+
+        // const movie = new Movie(data)
+        Movie.insertMany(eventList)
             .then(() => {
                 console.log("successfully written")
                 return res.json({
                     success: true,
-                    message: 'Movie created!',
+                    message: 'Device created!',
                 })
             })
+
+
+    }).catch((error) => {
+        console.log("Error getting document:", error);
+    })
 
 
     //    return res.json({ success: true })
@@ -158,15 +181,13 @@ getMovieById = async (req, res) => {
 
 getMovies = async (req, res) => {
     await Movie.find({}, (err, movies) => {
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-        if (!movies.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Movie not found` })
-        }
-        return res.status(200).json({ success: true, data: movies })
+        return res.status(200).json({data: movies })
+    }).catch(err => console.log(err))
+}
+
+getDevices = async (req, res) => {
+    await Devicez.find({}, (err, movies) => {
+        return res.status(200).json({data: movies })
     }).catch(err => console.log(err))
 }
 
@@ -177,5 +198,6 @@ module.exports = {
     deleteMovie,
     getMovies,
     getMovieById,
-    Device
+    Device,
+    getDevices
 }

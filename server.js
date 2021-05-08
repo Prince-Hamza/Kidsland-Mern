@@ -2,8 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser')
-const db = require('../db')
-const movieRouter = require('../db/routes/movie-router')
+const db = require('./db')
+const movieRouter = require('./db/routes/movie-router')
 require('dotenv').config()
 // import firebase from 'firebase'
 const port = process.env.PORT;
@@ -15,9 +15,11 @@ app.use(bodyParser.json())
 
 app.use('/api', movieRouter)
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+// app.get('/', (req, res) => {
+//   res.send('Hello World!')
+// })
+
+app.use('/' , express.static(__dirname + '/kidsland/build'))
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 

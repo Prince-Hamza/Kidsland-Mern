@@ -10,7 +10,7 @@ const mongoose = require('mongoose')
 
 // module.exports = db
 
-const uri = "mongodb+srv://HamzaAhmed:isi151isi@devices.4jhf4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+const uri = "mongodb+srv://HamzaAhmed:isi151isi@devices.4jhf4.mongodb.net/Devices?retryWrites=true&w=majority"
 
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
