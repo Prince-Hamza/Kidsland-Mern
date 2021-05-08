@@ -10,6 +10,10 @@
     "client": "npm start --prefix kidsland",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
+  "engines":{
+    "node":"15.2.0",
+    "npm":"7.6.3"
+  },
   "author": "Brad Traversy",
   "license": "MIT",
   "devDependencies": {
