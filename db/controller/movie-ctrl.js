@@ -11,20 +11,14 @@ Device = async (req, res) => {
 
     let devId = req.url.split('/')[2]
     var db = firebase.firestore()
-    var docRef = db.collection("devices").doc(devId).collection('events')
+    var docRef = db.collection("devices").doc(devId)
     var eventList = []
 
     docRef.get().then((doc) => {
-
-        doc.forEach((ev)=>{
-            let data = ev.data()
-            data.Device = devId
-            eventList.push(data)
-        })
-           
-
-        // const movie = new Movie(data)
-        Movie.insertMany(eventList)
+        let data = doc.data()
+        data.Device = devId
+        const movie = new Devicez(data)
+        movie.save()
             .then(() => {
                 console.log("successfully written")
                 return res.json({
@@ -181,13 +175,13 @@ getMovieById = async (req, res) => {
 
 getMovies = async (req, res) => {
     await Movie.find({}, (err, movies) => {
-        return res.status(200).json({data: movies })
+        return res.status(200).json({ data: movies })
     }).catch(err => console.log(err))
 }
 
 getDevices = async (req, res) => {
     await Devicez.find({}, (err, movies) => {
-        return res.status(200).json({data: movies })
+        return res.status(200).json({ data: movies })
     }).catch(err => console.log(err))
 }
 
