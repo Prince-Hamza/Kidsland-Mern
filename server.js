@@ -19,7 +19,7 @@ app.use('/api', movieRouter)
 //   res.send('Hello World!')
 // })
 
-app.use('/' , express.static(__dirname + '/kidsland/build'))
+app.use('/' , express.static(__dirname + '/build'))
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
