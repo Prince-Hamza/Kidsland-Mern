@@ -202,9 +202,26 @@ getDeviceEvents = async (req, res) => {
     let devId = req.url.split('/')[2]
     console.log(`requested event info for device: ${devId}`)
 
-    await Event.find({ Device: devId }, (err, movies) => {
-        return res.status(200).json({ data: movies })
-    }).catch(err => console.log(err))
+    // await Event.find({ Device: devId }, (err, movies) => {
+
+    //     if (err) {
+    //         return res.status(400).json({ success: false, error: err })
+    //     }
+
+    //     return res.status(200).json({ data: movies })
+    // }).catch(err => console.log(err))
+
+    await Event.find({ Device: devId }).limit(600).exec((err, info) => {
+
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        return res.status(200).json({ data: info })
+
+
+    })
+
 
 }
 
