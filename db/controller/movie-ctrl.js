@@ -1,5 +1,6 @@
-const Movie = require('../models/movie-model')
+const Event = require('../models/Events')
 const Devicez = require('../models/Devices')
+const State = require('../models/State')
 
 const firebase = require('firebase')
 
@@ -11,14 +12,29 @@ Device = async (req, res) => {
 
     let devId = req.url.split('/')[2]
     var db = firebase.firestore()
-    var docRef = db.collection("devices").doc(devId)
+    var docRef = db.collection("devices").doc(devId).collection('events')
     var eventList = []
 
     docRef.get().then((doc) => {
-        let data = doc.data()
-        data.Device = devId
-        const movie = new Devicez(data)
-        movie.save()
+
+        doc.forEach((ev) => {
+            data = ev.data()
+            data.Device = devId
+            data.timeLocal = toDate(data.timeLocal)
+            data.timeSync = toDate(data.timeSync)
+
+            eventList.push(data)
+        })
+
+        // let data = doc.data()
+        // data.Device = devId
+
+        // if (data.moneyReset) data.moneyReset = toDate(data.moneyReset)
+        // data.lastEvent.timeLocal = toDate(data.lastEvent.timeLocal)
+        // data.lastEvent.timeSync = toDate(data.lastEvent.timeSync)
+
+        //  const Info = new Devicez(data)
+        Event.insertMany(eventList)
             .then(() => {
                 console.log("successfully written")
                 return res.json({
@@ -158,7 +174,10 @@ deleteMovie = async (req, res) => {
 }
 
 getMovieById = async (req, res) => {
-    await Movie.findOne({ _id: req.params.id }, (err, movie) => {
+    // let p = window.location.href.split('/')[3]
+    let devId = req.url.split('/')[2]
+
+    await Devicez.findOne({ Device: devId }, (err, movie) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -166,15 +185,26 @@ getMovieById = async (req, res) => {
         if (!movie) {
             return res
                 .status(404)
-                .json({ success: false, error: `Movie not found` })
+                .json({ success: false, error: `Device not found` })
         }
-        return res.status(200).json({ success: true, data: movie })
+        return res.status(200).json({ info: movie })
     }).catch(err => console.log(err))
+
+}
+
+getDeviceEvents = async (req, res) => {
+    // let p = window.location.href.split('/')[3]
+    let devId = req.url.split('/')[2]
+
+    await Event.find({Device: "cMeucuqYV2b"}, (err, movies) => {
+        return res.status(200).json({ data: movies })
+    }).catch(err => console.log(err))
+
 }
 
 
 getMovies = async (req, res) => {
-    await Movie.find({}, (err, movies) => {
+    await Devicez.find({ "Device": "cMeucuqYV2b" }, (err, movies) => {
         return res.status(200).json({ data: movies })
     }).catch(err => console.log(err))
 }
@@ -193,5 +223,6 @@ module.exports = {
     getMovies,
     getMovieById,
     Device,
-    getDevices
+    getDevices,
+    getDeviceEvents
 }
