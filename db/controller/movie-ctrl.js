@@ -22,18 +22,18 @@ Device = async (req, res) => {
             data.Device = devId
             data.timeLocal = toDate(data.timeLocal)
             data.timeSync = toDate(data.timeSync)
+            data.timeLocalOnly = data.timeLocal.toString().split(" ")[4]
+            data.timeSyncOnly = data.timeLocal.toString().split(" ")[4]
+
+            // Thu Apr 08 2021 12:32:32 GMT-0700 (Pacific Daylight Time)
 
             eventList.push(data)
         })
 
-        // let data = doc.data()
-        // data.Device = devId
 
-        // if (data.moneyReset) data.moneyReset = toDate(data.moneyReset)
-        // data.lastEvent.timeLocal = toDate(data.lastEvent.timeLocal)
-        // data.lastEvent.timeSync = toDate(data.lastEvent.timeSync)
 
         //  const Info = new Devicez(data)
+
         Event.insertMany(eventList)
             .then(() => {
                 console.log("successfully written")
@@ -54,7 +54,12 @@ Device = async (req, res) => {
 }
 
 toDate = (timestamp) => {
-    return timestamp.toDate().toDateString()
+    //    console.log(new Date(timestamp.seconds*1000))
+
+    // return timestamp.toDate().toDateString()
+
+    return new Date(timestamp.seconds * 1000)
+
 }
 
 connect = () => {
@@ -195,8 +200,9 @@ getMovieById = async (req, res) => {
 getDeviceEvents = async (req, res) => {
     // let p = window.location.href.split('/')[3]
     let devId = req.url.split('/')[2]
+    console.log(`requested event info for device: ${devId}`)
 
-    await Event.find({Device: "cMeucuqYV2b"}, (err, movies) => {
+    await Event.find({ Device: devId }, (err, movies) => {
         return res.status(200).json({ data: movies })
     }).catch(err => console.log(err))
 
