@@ -247,9 +247,15 @@ newdevice = async (req, res) => {
 
     const Param = req.url.split('/')[2]
     var Headings = Param.split('&')
-    var Jsn = ({ name: "", isBusy: "", rssiDB: "", moneyReset: "" , admins:[] })
+    var Jsn = ({ name: "", isBusy: "", rssiDB: "", moneyReset: "", admins: [] })
+    var localdate = '', localtime = '', syncdate, synctime;
 
-    if (!contains(Headings)) return res.send('Missing Device Name')
+    if (!contains(Headings, 'name=')) return res.send('Missing Device Name')
+    if (!contains(Headings, 'localdate=')) return res.send('Missing local Date')
+    if (!contains(Headings, 'localtime=')) return res.send('Missing local Time')
+    if (!contains(Headings, 'syncdate=')) return res.send('Missing Sync Date')
+    if (!contains(Headings, 'synctime=')) return res.send('Missing Sync Time')
+
 
     Headings.forEach((string) => {
         if (string.split('=')[0] === 'name') Jsn.name = string.split('=')[1]
@@ -260,12 +266,30 @@ newdevice = async (req, res) => {
             var arr = string.split('=')[1].split('_')
             Jsn.admins = arr
         }
+        if (string.split('=')[0] === 'localdate') { localdate = string.split('=')[1] }
+        if (string.split('=')[0] === 'localtime') { localtime = string.split('=')[1] }
+        if (string.split('=')[0] === 'syncdate') { syncdate = string.split('=')[1] }
+        if (string.split('=')[0] === 'synctime') { synctime = string.split('=')[1] }
+
 
     })
 
 
+    let syncdateTime = syncdate + 'T' + synctime
+    let localdateTime = localdate + 'T' + localtime
 
- 
+    console.log(new Date(localdateTime))
+    console.log(new Date(syncdateTime))
+
+
+    if (!new Date(localdateTime)) return res.send('Date or Time is Invalid')
+    if (!new Date(syncdateTime)) return res.send('Date or Time is Invalid')
+
+
+    var lastEvent = { timeLocal: localdateTime, timeSync: syncdateTime }
+    Jsn.lastEvent = lastEvent
+    // yyyy-mm-dd
+
     const device = new Devicez(Jsn)
 
     device.save().then(() => {
@@ -280,17 +304,73 @@ newdevice = async (req, res) => {
 
 
 
-    
-
-
-
 }
 
-contains = (Headings) => {
+contains = (Headings, param) => {
     var search = false
-    Headings.forEach((string) => { if (string.includes('name=')) { search = true } })
+    Headings.forEach((string) => { if (string.includes(param)) { search = true } })
     return search
 }
+
+
+newEvent = async (req, res) => {
+    const Param = req.url.split('/')[2]
+    var Headings = Param.split('&')
+    var Jsn = ({ amount:1 })
+    var localdate = '', localtime = '', syncdate, synctime;
+
+    if (!contains(Headings, 'amount=')) return res.send('Missing Device Name')
+    if (!contains(Headings, 'type=')) return res.send('Missing Device Name')
+    if (!contains(Headings, 'localdate=')) return res.send('Missing local Date')
+    if (!contains(Headings, 'localtime=')) return res.send('Missing local Time')
+    if (!contains(Headings, 'syncdate=')) return res.send('Missing Sync Date')
+    if (!contains(Headings, 'synctime=')) return res.send('Missing Sync Time')
+
+
+    Headings.forEach((string) => {
+        if (string.split('=')[0] === 'amount') Jsn.amount = string.split('=')[1]
+        if (string.split('=')[0] === 'type') Jsn.type = string.split('=')[1]
+
+        if (string.split('=')[0] === 'localdate') { localdate = string.split('=')[1] }
+        if (string.split('=')[0] === 'localtime') { localtime = string.split('=')[1] }
+        if (string.split('=')[0] === 'syncdate') { syncdate = string.split('=')[1] }
+        if (string.split('=')[0] === 'synctime') { synctime = string.split('=')[1] }
+
+
+    })
+
+
+    let syncdateTime = syncdate + 'T' + synctime
+    let localdateTime = localdate + 'T' + localtime
+
+    console.log(new Date(localdateTime))
+    console.log(new Date(syncdateTime))
+
+
+    if (!new Date(localdateTime)) return res.send('Date or Time is Invalid')
+    if (!new Date(syncdateTime)) return res.send('Date or Time is Invalid')
+
+
+
+    Jsn.timeLocal = localdateTime
+    Jsn.timeSync = syncdateTime
+
+    const event = new Event(Jsn)
+
+    event.save().then(() => {
+        return res.status(201).send('Successfully Written: ' + JSON.stringify(Jsn))
+    })
+        .catch(error => {
+            return res.status(400).json({
+                error,
+                message: 'Event not created!',
+            })
+        })
+
+
+
+}
+
 
 
 module.exports = {
@@ -302,5 +382,6 @@ module.exports = {
     Device,
     getDevices,
     getDeviceEvents,
-    newdevice
+    newdevice,
+    newEvent
 }

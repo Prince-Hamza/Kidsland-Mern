@@ -13,6 +13,6 @@ router.get('/getdeviceevents/:id', MovieCtrl.getDeviceEvents)
 router.get('/getdeviceinfo/:id', MovieCtrl.getMovieById)
 
 router.get('/newdevice/:id', MovieCtrl.newdevice)
-router.post('/newevent/:id', MovieCtrl.createMovie)
+router.get('/newevent/:id', MovieCtrl.newEvent)
 
 module.exports = router
