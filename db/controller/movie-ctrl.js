@@ -316,7 +316,7 @@ contains = (Headings, param) => {
 newEvent = async (req, res) => {
     const Param = req.url.split('/')[2]
     var Headings = Param.split('&')
-    var Jsn = ({ amount:1 })
+    var Jsn = ({ amount:1 , Device:'' })
     var localdate = '', localtime = '', syncdate, synctime;
 
     if (!contains(Headings, 'amount=')) return res.send('Missing Device Name')
@@ -325,11 +325,15 @@ newEvent = async (req, res) => {
     if (!contains(Headings, 'localtime=')) return res.send('Missing local Time')
     if (!contains(Headings, 'syncdate=')) return res.send('Missing Sync Date')
     if (!contains(Headings, 'synctime=')) return res.send('Missing Sync Time')
+    if (!contains(Headings, 'Device=')) return res.send('Missing Device Id')
+
 
 
     Headings.forEach((string) => {
         if (string.split('=')[0] === 'amount') Jsn.amount = string.split('=')[1]
         if (string.split('=')[0] === 'type') Jsn.type = string.split('=')[1]
+        if (string.split('=')[0] === 'Device') Jsn.type = string.split('=')[1]
+
 
         if (string.split('=')[0] === 'localdate') { localdate = string.split('=')[1] }
         if (string.split('=')[0] === 'localtime') { localtime = string.split('=')[1] }
