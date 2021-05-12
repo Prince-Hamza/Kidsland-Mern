@@ -239,6 +239,60 @@ getDevices = async (req, res) => {
 }
 
 
+
+
+newdevice = async (req, res) => {
+
+    // @example : /api/newdevice/name=name&isbusy=isbusy&rssidb=55&moneyreset=0&admin=humzi_merry 
+
+    const Param = req.url.split('/')[2]
+    var Headings = Param.split('&')
+    var Jsn = ({ name: "", isBusy: "", rssiDB: "", moneyReset: "" , admins:[] })
+
+    if (!contains(Headings)) return res.send('Missing Device Name')
+
+    Headings.forEach((string) => {
+        if (string.split('=')[0] === 'name') Jsn.name = string.split('=')[1]
+        if (string.split('=')[0] === 'isbusy') Jsn.isBusy = string.split('=')[1]
+        if (string.split('=')[0] === 'rssidb') Jsn.rssiDB = string.split('=')[1]
+        if (string.split('=')[0] === 'moneyreset') Jsn.moneyReset = string.split('=')[1]
+        if (string.split('=')[0] === 'admins') {
+            var arr = string.split('=')[1].split('_')
+            Jsn.admins = arr
+        }
+
+    })
+
+
+
+ 
+    const device = new Devicez(Jsn)
+
+    device.save().then(() => {
+        return res.status(201).send('Successfully Written: ' + JSON.stringify(Jsn))
+    })
+        .catch(error => {
+            return res.status(400).json({
+                error,
+                message: 'Device not created!',
+            })
+        })
+
+
+
+    
+
+
+
+}
+
+contains = (Headings) => {
+    var search = false
+    Headings.forEach((string) => { if (string.includes('name=')) { search = true } })
+    return search
+}
+
+
 module.exports = {
     createMovie,
     updateMovie,
@@ -247,5 +301,6 @@ module.exports = {
     getMovieById,
     Device,
     getDevices,
-    getDeviceEvents
+    getDeviceEvents,
+    newdevice
 }
