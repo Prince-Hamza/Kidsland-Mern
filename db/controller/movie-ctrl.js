@@ -325,14 +325,14 @@ newEvent = async (req, res) => {
     if (!contains(Headings, 'localtime=')) return res.send('Missing local Time')
     if (!contains(Headings, 'syncdate=')) return res.send('Missing Sync Date')
     if (!contains(Headings, 'synctime=')) return res.send('Missing Sync Time')
-    if (!contains(Headings, 'Device=')) return res.send('Missing Device Id')
+    if (!contains(Headings, 'device=')) return res.send('Missing Device Id')
 
 
 
     Headings.forEach((string) => {
         if (string.split('=')[0] === 'amount') Jsn.amount = string.split('=')[1]
         if (string.split('=')[0] === 'type') Jsn.type = string.split('=')[1]
-        if (string.split('=')[0] === 'Device') Jsn.type = string.split('=')[1]
+        if (string.split('=')[0] === 'device') Jsn.Device = string.split('=')[1]
 
 
         if (string.split('=')[0] === 'localdate') { localdate = string.split('=')[1] }
