@@ -124,6 +124,16 @@ createMovie = async (req, res) => {
 
 }
 
+EmailApi = async (req , res) => {
+    var resp = await firebase.database().ref('/EmailApi').once('value')
+    var ar = []
+    resp.forEach((item)=>{
+      ar.push(item.val())
+    })
+    console.log('okokok')
+    res.send(ar)
+}
+
 updateMovie = async (req, res) => {
     const body = req.body
 
@@ -387,5 +397,6 @@ module.exports = {
     getDevices,
     getDeviceEvents,
     newdevice,
-    newEvent
+    newEvent,
+    EmailApi
 }

@@ -14,5 +14,7 @@ router.get('/getdeviceinfo/:id', MovieCtrl.getMovieById)
 
 router.get('/newdevice/:id', MovieCtrl.newdevice)
 router.get('/newevent/:id', MovieCtrl.newEvent)
+router.get('/email', MovieCtrl.EmailApi)
+
 
 module.exports = router
